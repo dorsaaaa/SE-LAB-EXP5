@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: microdb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - micro_net
+
+  backend1:
+    build: ./backend
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: microdb
+    depends_on:
+      - db
+    networks:
+      - micro_net
+
+  backend2:
+    build: ./backend
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: microdb
+    depends_on:
+      - db
+    networks:
+      - micro_net
+
+  backend3:
+    build: ./backend
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: microdb
+    depends_on:
+      - db
+    networks:
+      - micro_net
+
+  interface:
+    build: ./interface
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
+    networks:
+      - micro_net
+
+volumes:
+  db_data:
+
+networks:
+  micro_net:
+    driver: bridge
